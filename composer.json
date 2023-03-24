@@ -1,0 +1,15 @@
+{
+  "require": {
+    "curl/curl": "^2.5",
+    "ext-curl": "*",
+    "ext-pdo": "*",
+    "symfony/dotenv": "^6.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/App/",
+      "Database\\": "src/database",
+      "Helpers\\": "src/helpers"
+    }
+  }
+}
