@@ -16,10 +16,8 @@ use PDOException;
 class Queue implements Model
 {
     private DB $db;
-    private Telegram $telegram;
     public function __construct()
     {
-        $this->telegram = new Telegram($_ENV['BOT_TOKEN']);
         $this->db = App::db();
     }
 
@@ -33,7 +31,7 @@ class Queue implements Model
             ]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->telegram->sendReport('db',$e);
+            trigger_error($e);
             return [];
         }
     }
@@ -55,7 +53,7 @@ class Queue implements Model
                 'place' => $params['place']
             ];
         } catch (PDOException $e) {
-            $this->telegram->sendReport('db',$e);
+            trigger_error($e);
             return [];
         }
     }
@@ -69,7 +67,7 @@ class Queue implements Model
                 'date' => Schedule::getNextLesson('250701')['date']
             ]);
         } catch (PDOException $e) {
-            $this->telegram->sendReport('db',$e);
+            trigger_error($e);
         }
     }
 
@@ -83,7 +81,7 @@ class Queue implements Model
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         } catch(PDOException $e){
-            $this->telegram->sendReport('db',$e);
+            trigger_error($e);
             return [];
         }
     }
@@ -104,7 +102,7 @@ class Queue implements Model
             return $stmt->fetch(PDO::FETCH_ASSOC);
 
         } catch(PDOException $e){
-            $this->telegram->sendReport('db',$e);
+            trigger_error($e);
             return null;
         }
     }

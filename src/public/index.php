@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../helpers/error_handler.php';
 
 use App\App;
 use App\Config;

@@ -2,13 +2,17 @@
 
 namespace App;
 
+use App\Commands\CommandHandler;
+
 class App
 {
     private static DB $db;
+    private CommandHandler $commandHandler;
 
     public function __construct(protected Config $config, protected Telegram $telegram)
     {
         static::$db = new DB($config->db);
+        $this->commandHandler = new CommandHandler($telegram);
     }
 
     public static function db(): DB
@@ -36,7 +40,7 @@ class App
                                     'user_id' => $update['message']['from']['id'],
                                     'tg_username' => $update['message']['from']['username'] ?? "",
                                 ];
-                                $this->telegram->invokeCommand($update['message']['text'], $params);
+                                $this->commandHandler->handleCommand($update['message']['text'], $params);
                             }
                         }
                     }
