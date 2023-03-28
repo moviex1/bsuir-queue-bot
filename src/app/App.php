@@ -28,14 +28,16 @@ class App
 
             if (!empty($updates['result'])) {
                 foreach ($updates['result'] as $update) {
-                    if (!array_key_exists('edited_message', $update)) {
-                        if (!$update['message']['from']['is_bot']) {
-                            $params = [
-                                'chat_id' => $update['message']['chat']['id'],
-                                'user_id' => $update['message']['from']['id'],
-                                'tg_username' => $update['message']['from']['username'],
-                            ];
-                            $this->telegram->invokeCommand($update['message']['text'], $params);
+                    if (array_key_exists('message', $update)) {
+                        if (array_key_exists('text', $update['message'])) {
+                            if (!$update['message']['from']['is_bot']) {
+                                $params = [
+                                    'chat_id' => $update['message']['chat']['id'],
+                                    'user_id' => $update['message']['from']['id'],
+                                    'tg_username' => $update['message']['from']['username'] ?? "",
+                                ];
+                                $this->telegram->invokeCommand($update['message']['text'], $params);
+                            }
                         }
                     }
                     $lastUpdateId = $update['update_id'] + 1;

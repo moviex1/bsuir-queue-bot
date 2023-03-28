@@ -17,7 +17,7 @@ class Validation
 
     private static function validateUsername(string $username): bool
     {
-        return (strlen($username) < 30);
+        return (strlen($username) < 50);
     }
 
     public static function validateCommand(array $command): bool
@@ -39,7 +39,7 @@ class Validation
         ) ? "<b>Неверно введеное место.<i>(число от 1 до 30)</i></b>" . PHP_EOL : "";
         $message .= !self::validateUsername(
             $command[2]
-        ) ? "<b>Слишком длинное имя.<i>(длина не более 20 символов)</i></b>" : "";
+        ) ? "<b>Слишком длинное имя.<i>(длина не более 30 символов)</i></b>" : "";
         return strlen($message) > 1 ? $message :"<b>Ошибка при вводе данных</b>";
     }
 

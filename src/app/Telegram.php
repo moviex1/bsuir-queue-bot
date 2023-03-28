@@ -130,13 +130,13 @@ class Telegram
 
     public function invokeCommand(string $message, array $params) : void
     {
-        if (explode(" ", $message)[0] == '/queue') {
+        if (in_array(explode(" ", $message)[0], ['/queue', '/queue@BsuirQueueBot']) ) {
             $this->queueCommand($message, $params);
-        } elseif ($message == '/remove') {
+        } elseif ($message == '/remove' || $message == '/remove@BsuirQueueBot') {
             $this->removeCommand($params['user_id'], $params['chat_id']);
-        } elseif ($message == '/list') {
+        } elseif ($message == '/list' || $message == '/list@BsuirQueueBot') {
             $this->listCommand($params['chat_id']);
-        } elseif ($message == '/show') {
+        } elseif ($message == '/show' || $message == '/show@BsuirQueueBot') {
             $this->showCommand($params['user_id'], $params['chat_id']);
         }
     }

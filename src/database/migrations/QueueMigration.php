@@ -39,7 +39,7 @@ class QueueMigration implements Migration
                     "CREATE TABLE `$_ENV[DB_DATABASE]`.`$this->table`
                 (`id` INT NOT NULL AUTO_INCREMENT ,
                  `user_id` INT NOT NULL ,
-                 `username` VARCHAR(30) NOT NULL ,
+                 `username` VARCHAR(50) NOT NULL ,
                  `reserved_at` TIMESTAMP NOT NULL ,
                  `date` TIMESTAMP NULL,
                  `tg_username` VARCHAR(40) NULL, 
