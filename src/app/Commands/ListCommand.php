@@ -9,7 +9,7 @@ use Database\Models\Queue;
 
 class ListCommand implements Command
 {
-    public function __construct(private Telegram $telegram,private int $chat_id)
+    public function __construct(private Telegram $telegram,private array $params)
     {
     }
 
@@ -33,6 +33,6 @@ class ListCommand implements Command
             'date' => $lesson['date'],
             'emojis' => $emojis,
         ];
-        $this->telegram->sendMessage($this->chat_id, Message::make('list', $queue));
+        $this->telegram->sendMessage($this->params['chat_id'], Message::make('list', $queue));
     }
 }

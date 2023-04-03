@@ -39,8 +39,9 @@ class App
                                     'chat_id' => $update['message']['chat']['id'],
                                     'user_id' => $update['message']['from']['id'],
                                     'tg_username' => $update['message']['from']['username'] ?? "",
+                                    'message' => $update['message']['text']
                                 ];
-                                $this->commandHandler->handleCommand($update['message']['text'], $params);
+                                $this->commandHandler->handleCommand($params);
                             }
                         }
                     }

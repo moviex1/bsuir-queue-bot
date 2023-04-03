@@ -36,6 +36,7 @@ class Queue implements Model
         }
     }
 
+
     public function add($params) : ?array
     {
         try {
@@ -57,6 +58,8 @@ class Queue implements Model
             return [];
         }
     }
+
+
 
     public function remove($id) : void
     {
@@ -106,5 +109,4 @@ class Queue implements Model
             return null;
         }
     }
-
 }

@@ -6,14 +6,9 @@ use App\App;
 use PDO;
 use PDOException;
 
-/**
- * This class has methods to check if table exist
- * and if not - creates new table
- */
-
-class QueueMigration implements Migration
+class RecommendationMigration
 {
-    private string $table = "queue";
+    private $table = "recommendations";
 
     private function checkIfExist() : ?bool
     {
@@ -36,17 +31,14 @@ class QueueMigration implements Migration
         if (!$this->checkIfExist()) {
             try {
                 $db->query(
-                    "CREATE TABLE `$_ENV[DB_DATABASE]`.`$this->table`
-                (`id` INT NOT NULL AUTO_INCREMENT ,
-                 `user_id` INT NOT NULL ,
-                 `username` VARCHAR(50) NOT NULL ,
-                 `reserved_at` TIMESTAMP NOT NULL ,
-                 `date` TIMESTAMP NULL,
-                 `tg_username` VARCHAR(40) NULL, 
-                 `place` INT NOT NULL,
-                 `emoji` INT NOT NULL DEFAULT '1',     
-                  PRIMARY KEY (`id`))
-                  ENGINE = InnoDB;"
+                    "CREATE TABLE `$_ENV[DB_DATABASE]`.`$this->table` (
+                              `id` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
+                              `user_id` INT UNSIGNED NOT NULL , 
+                              `grade` TINYINT UNSIGNED NULL DEFAULT NULL , 
+                              `recommendation` TEXT NULL DEFAULT NULL , 
+                              `lesson_id` INT UNSIGNED NOT NULL , 
+                               PRIMARY KEY (`id`))
+                               ENGINE = InnoDB;"
                 );
             } catch (PDOException $e) {
                 print "Error!: " . $e->getMessage() . "<br/>";
@@ -54,4 +46,5 @@ class QueueMigration implements Migration
             }
         }
     }
+
 }

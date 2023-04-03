@@ -51,6 +51,14 @@ class Validation
         $queue = new Queue();
         return $queue->getById($user_id);
     }
+    public static function validatePlaceNext(int $place) : bool{
+        $queue = new Queue();
+        return !$queue->wherePlaceNext($place);
+    }
+    public static function validateUserNext(int $user_id){
+        $queue = new Queue();
+        return $queue->getByIdNext($user_id);
+    }
 
 
 }

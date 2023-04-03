@@ -52,4 +52,25 @@ class Telegram
         $this->sendMessage($_ENV['TELEGRAM_REPORT_CHAT_ID'], Message::make("errors.default", $errors));
     }
 
+    public function sendButton(int $chat_id) {
+        $button = json_encode([
+            'inline_keyboard' => [
+                [
+                ['text' => '1', 'callback_data' => '1'],
+                ['text' => '2', 'callback_data' => '2'],
+                ]
+            ]
+        ]);
+        $this->bot('sendMessage', [
+            'chat_id' => $chat_id,
+            'text' => 'Buttons',
+            'reply_markup' => $button,
+
+        ]);
+    }
+
+    public function deleteMessage(int $chat_id, $message_id){
+        $this->bot('deleteMessage',['chat_id' => $chat_id, 'message_id' => $message_id]);
+    }
+
 }

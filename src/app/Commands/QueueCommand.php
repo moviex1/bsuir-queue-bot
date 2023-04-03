@@ -9,7 +9,7 @@ use Helpers\Validation;
 
 class QueueCommand implements Command
 {
-    public function __construct(private Telegram $telegram ,private string $message, private array $params)
+    public function __construct(private Telegram $telegram ,private array $params)
     {
     }
 
@@ -21,7 +21,7 @@ class QueueCommand implements Command
          *
          */
 
-        $command = explode(" ", $this->message, 3);
+        $command = explode(" ", $this->params['message'], 3);
         $queue = new Queue();
 
         if (Validation::validateCommand($command)) {
