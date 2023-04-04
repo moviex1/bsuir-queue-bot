@@ -3,16 +3,19 @@
 namespace App;
 
 use App\Commands\CommandHandler;
+use App\Commands\TelegramCommandFactory;
 
 class App
 {
     private static DB $db;
     private CommandHandler $commandHandler;
+    private TelegramCommandFactory $commandFactory;
 
     public function __construct(protected Config $config, protected Telegram $telegram)
     {
         static::$db = new DB($config->db);
-        $this->commandHandler = new CommandHandler($telegram);
+        $this->commandFactory = new TelegramCommandFactory($telegram);
+        $this->commandHandler = new CommandHandler($this->commandFactory);
     }
 
     public static function db(): DB
@@ -30,7 +33,7 @@ class App
                 true
             );
 
-            if (!empty($updates['result'])) {
+            if (empty($updates['result'])) {
                 sleep(1);
                 continue;
             }
@@ -56,8 +59,9 @@ class App
                     'tg_username' => $message['from']['username'] ?? "",
                     'message' => $text
                 ];
+                $this->commandFactory->setParams($params);
 
-                $this->commandHandler->handleCommand($params);
+                $this->commandHandler->handleCommand($text);
 
                 $lastUpdateId = $update['update_id'] + 1;
             }

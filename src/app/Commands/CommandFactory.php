@@ -2,24 +2,18 @@
 
 namespace App\Commands;
 
-class CommandFactory
+abstract class CommandFactory
 {
-    private $telegram;
-    private $params;
 
-    public function __construct($telegram, $params)
+    protected $params;
+
+    /**
+     * @param mixed $params
+     */
+    public function setParams($params): void
     {
-        $this->telegram = $telegram;
         $this->params = $params;
     }
 
-    public function createNewCommand($command) : ?Command
-    {
-        $classname = __NAMESPACE__ . '\\' . ucfirst(str_replace('/', '',$command)) . 'Command';
-        if(class_exists($classname)){
-            return new $classname($this->telegram, $this->params);
-        }
-        return null;
-    }
-
+    abstract public function createNewCommand(string $message) : ?Command;
 }
