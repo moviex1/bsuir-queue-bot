@@ -4,8 +4,8 @@ namespace App\Commands;
 
 use App\Message;
 use App\Schedule;
-use App\Telegram;
 use Database\Models\Queue;
+use Messages\Emojis;
 
 class ListCommand extends Command
 {
@@ -19,10 +19,14 @@ class ListCommand extends Command
          *
          * @var array $emojis
          */
-        include MESSAGE_PATH . '/emojis.php';
+        $emojis = Emojis::getEmojis();
         $queue = new Queue();
         $reserves = $queue->getAll();
         usort($reserves, fn($a, $b) => $a['place'] - $b['place']);
+
+        foreach ($emojis as $emoji){
+            echo $emoji;
+        }
 
         $lesson = Schedule::getNextLesson('250701');
         $queue = [
