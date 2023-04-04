@@ -6,12 +6,8 @@ use App\Message;
 use App\Telegram;
 use Database\Models\Queue;
 
-class ShowCommand implements Command
+class ShowCommand extends Command
 {
-    public function __construct(private Telegram $telegram,private array $params)
-    {
-    }
-
     public function execute(): void
     {
         /**

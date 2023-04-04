@@ -7,11 +7,8 @@ use App\Telegram;
 use Database\Models\Queue;
 use Helpers\Validation;
 
-class QueueCommand implements Command
+class QueueCommand extends Command
 {
-    public function __construct(private Telegram $telegram ,private array $params)
-    {
-    }
 
     public function execute() : void
     {

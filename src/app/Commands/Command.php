@@ -2,7 +2,13 @@
 
 namespace App\Commands;
 
-interface Command
+use App\Telegram;
+
+abstract class Command
 {
-    public function execute();
+    public function __construct(protected Telegram $telegram,protected array $params)
+    {
+    }
+
+    abstract public function execute() : void;
 }

@@ -7,11 +7,8 @@ use App\Schedule;
 use App\Telegram;
 use Database\Models\Queue;
 
-class ListCommand implements Command
+class ListCommand extends Command
 {
-    public function __construct(private Telegram $telegram,private array $params)
-    {
-    }
 
     public function execute(): void
     {
