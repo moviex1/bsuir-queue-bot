@@ -31,23 +31,38 @@ class App
             );
 
             if (!empty($updates['result'])) {
-                foreach ($updates['result'] as $update) {
-                    if (array_key_exists('message', $update)) {
-                        if (array_key_exists('text', $update['message'])) {
-                            if (!$update['message']['from']['is_bot']) {
-                                $params = [
-                                    'chat_id' => $update['message']['chat']['id'],
-                                    'user_id' => $update['message']['from']['id'],
-                                    'tg_username' => $update['message']['from']['username'] ?? "",
-                                    'message' => $update['message']['text']
-                                ];
-                                $this->commandHandler->handleCommand($params);
-                            }
-                        }
-                    }
-                    $lastUpdateId = $update['update_id'] + 1;
-                }
+                sleep(1);
+                continue;
             }
+
+            foreach ($updates['result'] as $update) {
+                $message = $update['message'] ?? null;
+
+                if (!$message || $update['message']['from']['is_bot']) {
+                    $lastUpdateId = $update['update_id'] + 1;
+                    continue;
+                }
+
+                $text = $message['text'] ?? null;
+
+                if(!$text){
+                    $lastUpdateId = $update['update_id'] + 1;
+                    continue;
+                }
+
+                $params = [
+                    'chat_id' => $message['chat']['id'],
+                    'user_id' => $message['from']['id'],
+                    'tg_username' => $message['from']['username'] ?? "",
+                    'message' => $text
+                ];
+
+                $this->commandHandler->handleCommand($params);
+
+                $lastUpdateId = $update['update_id'] + 1;
+            }
+
+
             sleep(1);
         }
     }
