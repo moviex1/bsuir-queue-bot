@@ -24,10 +24,6 @@ class ListCommand extends Command
         $reserves = $queue->getAll();
         usort($reserves, fn($a, $b) => $a['place'] - $b['place']);
 
-        foreach ($emojis as $emoji){
-            echo $emoji;
-        }
-
         $lesson = Schedule::getNextLesson('250701');
         $queue = [
             'reserves' => $reserves,
