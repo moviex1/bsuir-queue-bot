@@ -17,8 +17,8 @@ class TelegramCommandFactory extends CommandFactory
     public function createNewCommand(string $message) : ?Command
     {
         $command = explode('@', $message)[0];
-        $classname = __NAMESPACE__ . '\\' . ucfirst(str_replace('/', '',$command, $replaces)) . 'Command';
-        if(class_exists($classname) && $replaces == 1){
+        $classname = __NAMESPACE__ . '\\' . str_replace('/', '',$command, $replaces) . 'Command';
+        if(class_exists($classname) && $replaces == 1 && $command[0] == '/'){
             return new $classname($this->telegram, $this->params);
         }
         return null;

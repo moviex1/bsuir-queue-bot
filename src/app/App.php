@@ -7,20 +7,20 @@ use App\Commands\TelegramCommandFactory;
 
 class App
 {
-    private static DB $db;
+    private static DB $entityManager;
     private CommandHandler $commandHandler;
     private TelegramCommandFactory $commandFactory;
 
     public function __construct(protected Config $config, protected Telegram $telegram)
     {
-        static::$db = new DB($config->db);
+        static::$entityManager = new DB($config->db);
         $this->commandFactory = new TelegramCommandFactory($telegram);
         $this->commandHandler = new CommandHandler($this->commandFactory);
     }
 
-    public static function db(): DB
+    public static function entityManager(): DB
     {
-        return static::$db;
+        return static::$entityManager;
     }
 
     public function run()
@@ -41,7 +41,7 @@ class App
             foreach ($updates['result'] as $update) {
                 $message = $update['message'] ?? null;
 
-                if (!$message || $update['message']['from']['is_bot']) {
+                if (!$message || $message['from']['is_bot']) {
                     $lastUpdateId = $update['update_id'] + 1;
                     continue;
                 }
@@ -59,6 +59,7 @@ class App
                     'tg_username' => $message['from']['username'] ?? "",
                     'message' => $text
                 ];
+
                 $this->commandFactory->setParams($params);
 
                 $this->commandHandler->handleCommand($text);

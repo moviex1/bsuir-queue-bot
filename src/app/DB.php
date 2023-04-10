@@ -2,32 +2,26 @@
 
 namespace App;
 
-use PDO;
-use PDOException;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Exception;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMSetup;
 
 /**
- * @mixin PDO
+ * @mixin EntityManager
  */
 
 class DB
 {
-    private PDO $pdo;
+    private EntityManager $entityManager;
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
-        $defaultOptions = [
-            PDO::ATTR_EMULATE_PREPARES => true,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ];
-
         try {
-            $this->pdo = new PDO(
-                $config['driver'] . ':host=' . $config['host'] . ';dbname=' . $config['database'],
-                $config['user'],
-                $config['pass'],
-                $config['options'] ?? $defaultOptions
-            );
-        } catch (PDOException $e) {
+            $connection = DriverManager::getConnection($config);
+            $ORMConfig = ORMSetup::createAttributeMetadataConfiguration([__DIR__ . '/../database/Entities'], true);
+            $this->entityManager = new EntityManager($connection, $ORMConfig);
+        } catch (Exception $e) {
             print "Error!: " . $e->getMessage();
             die();
         }
@@ -35,6 +29,6 @@ class DB
 
     public function __call(string $name, array $arguments)
     {
-        return call_user_func_array([$this->pdo, $name], $arguments);
+        return call_user_func_array([$this->entityManager, $name], $arguments);
     }
 }

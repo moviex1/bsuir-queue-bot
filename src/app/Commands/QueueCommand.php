@@ -4,7 +4,7 @@ namespace App\Commands;
 
 use App\Message;
 use App\Telegram;
-use Database\Models\Queue;
+use Database\Entities\Queue;
 use Helpers\Validation;
 
 class QueueCommand extends Command

@@ -4,7 +4,7 @@ namespace App;
 
 use Curl\Curl;
 
-use Database\Models\Queue;
+use Database\Entities\Queue;
 
 use Helpers\Validation;
 

@@ -4,7 +4,7 @@ namespace App\Commands;
 
 use App\Message;
 use App\Schedule;
-use Database\Models\Queue;
+use Database\Entities\Queue;
 use Messages\Emojis;
 
 class ListCommand extends Command

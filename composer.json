@@ -3,7 +3,10 @@
     "curl/curl": "^2.5",
     "ext-curl": "*",
     "ext-pdo": "*",
-    "symfony/dotenv": "^6.2"
+    "symfony/dotenv": "^6.2",
+    "doctrine/dbal": "^3.6",
+    "doctrine/orm": "^2.14",
+    "symfony/cache": "^6.2"
   },
   "autoload": {
     "psr-4": {

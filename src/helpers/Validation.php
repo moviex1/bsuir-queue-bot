@@ -2,7 +2,7 @@
 
 namespace Helpers;
 
-use Database\Models\Queue;
+use Database\Entities\Queue;
 
 class Validation
 {
