@@ -1,14 +1,15 @@
 <?php
 
-namespace Database\Entities;
+namespace Database\Entity;
 
 use App\Enums\Role;
+use Database\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
 class User
 {
@@ -26,14 +27,15 @@ class User
     #[ORM\Column(type: Types::BIGINT, name:'tg_id')]
     private int $tgId;
 
+    #[ORM\Column(name: '`group`', type: Types::INTEGER)]
+    private int $group;
+
     #[ORM\Column(enumType: Role::class)]
     private Role $role = Role::Student;
 
     #[ORM\OneToMany(targetEntity: Recommendation::class, mappedBy: 'student', cascade: ['persist'])]
     private Collection $receivedRecommendations;
 
-    #[ORM\OneToMany(targetEntity: Queue::class, mappedBy: 'user')]
-    private Collection $queues;
 
     public function __construct()
     {
@@ -112,6 +114,22 @@ class User
     public function setRole(Role $role): void
     {
         $this->role = $role;
+    }
+
+    /**
+     * @return int
+     */
+    public function getGroup(): int
+    {
+        return $this->group;
+    }
+
+    /**
+     * @param int $group
+     */
+    public function setGroup(int $group): void
+    {
+        $this->group = $group;
     }
 
 }

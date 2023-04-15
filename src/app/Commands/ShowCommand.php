@@ -3,8 +3,7 @@
 namespace App\Commands;
 
 use App\Message;
-use App\Telegram;
-use Database\Entities\Queue;
+use Database\Entity\Queue;
 
 class ShowCommand extends Command
 {

@@ -19,7 +19,7 @@ class DB
     {
         try {
             $connection = DriverManager::getConnection($config);
-            $ORMConfig = ORMSetup::createAttributeMetadataConfiguration([__DIR__ . '/../database/Entities'], true);
+            $ORMConfig = ORMSetup::createAttributeMetadataConfiguration([__DIR__ . '/../Database/Entity'], true);
             $this->entityManager = new EntityManager($connection, $ORMConfig);
         } catch (Exception $e) {
             print "Error!: " . $e->getMessage();

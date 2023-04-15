@@ -2,7 +2,6 @@
 
 namespace App\Commands;
 
-use App\Telegram;
 
 class CommandHandler
 {

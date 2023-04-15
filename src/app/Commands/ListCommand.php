@@ -4,7 +4,9 @@ namespace App\Commands;
 
 use App\Message;
 use App\Schedule;
-use Database\Entities\Queue;
+use App\States\ChoosingDateState;
+use App\States\EnteringRecommendationState;
+use Database\Entity\Queue;
 use Messages\Emojis;
 
 class ListCommand extends Command
@@ -19,17 +21,16 @@ class ListCommand extends Command
          *
          * @var array $emojis
          */
-        $emojis = Emojis::getEmojis();
-        $queue = new Queue();
-        $reserves = $queue->getAll();
-        usort($reserves, fn($a, $b) => $a['place'] - $b['place']);
+//        $emojis = Emojis::getEmojis();
+//        $queue = new Queue();
+//        $reserves = $queue->getAll();
+//        usort($reserves, fn($a, $b) => $a['place'] - $b['place']);
 
-        $lesson = Schedule::getNextLesson('250701');
-        $queue = [
-            'reserves' => $reserves,
-            'date' => $lesson['date'],
-            'emojis' => $emojis,
-        ];
-        $this->telegram->sendMessage($this->params['chat_id'], Message::make('list', $queue));
+//        $lesson = Schedule::getNextLesson('250701');
+//        $queue = [
+//            'reserves' => $reserves,
+//            'date' => $lesson['date'],
+//            'emojis' => $emojis,
+//        ];
     }
 }

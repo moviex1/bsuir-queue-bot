@@ -2,10 +2,10 @@
 
 namespace App\Commands;
 
-use App\Message;
-use App\Telegram;
-use Database\Entities\Queue;
-use Helpers\Validation;
+use App\App;
+use App\Schedule;
+use App\States\ChoosingDateState;
+use Database\Entity\User;
 
 class QueueCommand extends Command
 {
@@ -17,29 +17,42 @@ class QueueCommand extends Command
          * Otherwise, function sends an error message to the user.
          *
          */
+        $user = App::entityManager()->getRepository(User::class)->getById($this->params['user_id']);
 
-        $command = explode(" ", $this->params['message'], 3);
-        $queue = new Queue();
+        $this->checkIfUserExist($user);
 
-        if (!Validation::validateCommand($command)) {
-            $failMessage = Validation::getFailMessage($command);
-            $this->telegram->sendMessage($this->params['chat_id'], $failMessage);
-            return;
+        $buttons = $this->getButtons($user->getGroup());
+
+        $this->stateManager->setState(
+            $this->params['user_id'],
+            $this->getButtonsId($buttons),
+            new ChoosingDateState($this->telegram, $this->stateManager)
+        );
+
+        $this->stateManager->addDataToState($this->params['user_id'], $buttons, 'buttons');
+    }
+
+    private function getButtons(int $group): array
+    {
+        return [
+            ['text' => Schedule::getLessons($group)[0]['date'], 'callback_data' => '0'],
+            ['text' => Schedule::getLessons($group)[1]['date'], 'callback_data' => '1']
+        ];
+    }
+
+    private function checkIfUserExist(?User $user)
+    {
+        if (!$user) {
+            $this->telegram->sendMessage(
+                $this->params['chat_id'],
+                'firstly you need to register, use command /register'
+            );
         }
-        if (!$user = Validation::validateUser($this->params['user_id'])) {
-            $this->telegram->sendMessage($this->params['chat_id'], Message::make('reserved', $user));
-            return;
-        }
-        if (Validation::validatePlace($command[1])) {
-            $this->telegram->sendMessage($this->params['chat_id'], Message::make('reservedBySomeone'));
-            return;
-        }
-        $reserve = $queue->add([
-            'user_id' => $this->params['user_id'],
-            'username' => $command[2],
-            'tg_username' => $this->params['tg_username'],
-            'place' => $command[1]
-        ]);
-        $this->telegram->sendMessage($this->params['chat_id'], Message::make('queue', $reserve));
+    }
+
+    private function getButtonsId(array $buttons): int
+    {
+        $response = $this->telegram->sendButtons($this->params['chat_id'], $buttons);
+        return json_decode($response, true)['result']['message_id'];
     }
 }

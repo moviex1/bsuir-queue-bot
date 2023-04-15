@@ -2,13 +2,14 @@
 
 namespace App\Commands;
 
+use App\States\StateManager;
 use App\Telegram;
 
 class TelegramCommandFactory extends CommandFactory
 {
     private Telegram $telegram;
 
-    public function __construct(Telegram $telegram)
+    public function __construct(Telegram $telegram, protected StateManager $stateManager)
     {
         $this->telegram = $telegram;
     }
@@ -19,7 +20,7 @@ class TelegramCommandFactory extends CommandFactory
         $command = explode('@', $message)[0];
         $classname = __NAMESPACE__ . '\\' . str_replace('/', '',$command, $replaces) . 'Command';
         if(class_exists($classname) && $replaces == 1 && $command[0] == '/'){
-            return new $classname($this->telegram, $this->params);
+            return new $classname($this->telegram, $this->params, $this->stateManager);
         }
         return null;
     }

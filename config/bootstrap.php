@@ -15,7 +15,7 @@ $env = new Dotenv();
 $env->load(__DIR__ . '/../.env');
 
 
-$paths = [__DIR__ . '/../src/database/Entities'];
+$paths = [__DIR__ . '/../src/Database/Entity'];
 $isDevMode = true;
 
 $dbParams = [

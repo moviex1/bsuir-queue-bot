@@ -1,14 +1,15 @@
 <?php
 
-namespace Database\Entities;
+namespace Database\Entity;
 
 
+use Database\Repository\QueueRepository;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
-#[ORM\Table(name:'queue')]
+#[ORM\Entity(repositoryClass: QueueRepository::class)]
+#[ORM\Table(name: 'queue')]
 class Queue
 {
     #[ORM\Id]
@@ -19,23 +20,20 @@ class Queue
     #[ORM\Column(type: Types::SMALLINT)]
     private int $place;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "queues")]
-    private User $user;
-
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $group;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private DateTime $lesson_date;
+    #[ORM\Column(name:'lesson_date')]
+    private DateTime $lessonDate;
 
     #[ORM\Column(type: Types::SMALLINT)]
     private int $emoji;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private User $user;
 
     public function __construct()
     {
         $this->emoji = rand(0,112);
     }
+
 
     public function getEmoji(): int
     {
@@ -55,32 +53,18 @@ class Queue
      */
     public function getLessonDate(): DateTime
     {
-        return $this->lesson_date;
+        return $this->lessonDate;
     }
 
     /**
-     * @param DateTime $lesson_date
+     * @param DateTime $lessonDate
      */
-    public function setLessonDate(DateTime $lesson_date): void
+    public function setLessonDate(DateTime $lessonDate): void
     {
-        $this->lesson_date = $lesson_date;
+        $this->lessonDate = $lessonDate;
     }
 
-    /**
-     * @return int
-     */
-    public function getGroup(): int
-    {
-        return $this->group;
-    }
 
-    /**
-     * @param int $group
-     */
-    public function setGroup(int $group): void
-    {
-        $this->group = $group;
-    }
 
     /**
      * @return User
@@ -112,5 +96,21 @@ class Queue
     public function setPlace(int $place): void
     {
         $this->place = $place;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 }

@@ -2,7 +2,10 @@
 
 namespace Helpers;
 
-use Database\Entities\Queue;
+use App\App;
+use Database\Entity\Queue;
+use Database\Entity\User;
+use DateTime;
 
 class Validation
 {
@@ -15,7 +18,7 @@ class Validation
         return false;
     }
 
-    private static function validateUsername(string $username): bool
+    public static function validateUsername(string $username): bool
     {
         return (strlen($username) < 50);
     }
@@ -28,37 +31,12 @@ class Validation
         return self::validateUsername($command[2]) && self::validateNum($command[1]);
     }
 
-    public static function getFailMessage(array $command): string
+
+    public static function validatePlace(int $place, DateTime $date, $group): bool
     {
-        $message = "";
-        if (count($command) < 3) {
-            return "<b>Вы не передали место или имя. <i>(/queue [место] [имя])</i></b>";
-        }
-        $message .= !self::validateNum(
-            $command[1]
-        ) ? "<b>Неверно введеное место.<i>(число от 1 до 30)</i></b>" . PHP_EOL : "";
-        $message .= !self::validateUsername(
-            $command[2]
-        ) ? "<b>Слишком длинное имя.<i>(длина не более 30 символов)</i></b>" : "";
-        return strlen($message) > 1 ? $message :"<b>Ошибка при вводе данных</b>";
-    }
 
-    public static function validatePlace(int $place) : bool{
-       $queue = new Queue();
-       return !$queue->wherePlace($place);
+        $queue = App::entityManager()->getRepository(Queue::class)->findByPlace;
+        return !$queue->wherePlace($place);
     }
-    public static function validateUser(int $user_id){
-        $queue = new Queue();
-        return $queue->getById($user_id);
-    }
-    public static function validatePlaceNext(int $place) : bool{
-        $queue = new Queue();
-        return !$queue->wherePlaceNext($place);
-    }
-    public static function validateUserNext(int $user_id){
-        $queue = new Queue();
-        return $queue->getByIdNext($user_id);
-    }
-
 
 }
