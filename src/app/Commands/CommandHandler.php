@@ -3,22 +3,29 @@
 namespace App\Commands;
 
 
+use App\App;
+use App\Telegram;
+use Database\Entity\User;
+
 class CommandHandler
 {
     private array $queueMessages = [];
 
-    public function __construct(private CommandFactory $commandFactory)
+    public function __construct(private CommandFactory $commandFactory, private Telegram $telegram)
     {
     }
 
-    private function checkQueue($params)
+    public function handleCommand(array $params)
     {
-        return array_key_exists($params['user_id'], $this->queueMessages);
-    }
-
-    public function handleCommand(string $message)
-    {
-        $command = $this->commandFactory->createNewCommand($message);
-        $command?->execute();
+        $command = $this->commandFactory->createNewCommand($params['message']);
+        if(!$command){
+            return;
+        }
+        $user = App::entityManager()->getRepository(User::class)->findOneByTgId($params['user_id']);
+        if(!$user && $params['message'] != '/register'){
+            $this->telegram->sendMessage($params['chat_id'], 'You need to register first');
+            return;
+        }
+        $command->execute();
     }
 }

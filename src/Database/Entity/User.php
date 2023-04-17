@@ -24,7 +24,7 @@ class User
     #[ORM\Column(type: 'string', name: 'tg_username')]
     private string|null $tgUsername;
 
-    #[ORM\Column(type: Types::BIGINT, name:'tg_id')]
+    #[ORM\Column(type: Types::BIGINT, name: 'tg_id')]
     private int $tgId;
 
     #[ORM\Column(name: '`group`', type: Types::INTEGER)]
@@ -33,7 +33,10 @@ class User
     #[ORM\Column(enumType: Role::class)]
     private Role $role = Role::Student;
 
-    #[ORM\OneToMany(targetEntity: Recommendation::class, mappedBy: 'student', cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Queue::class, cascade: ['persist', 'remove'])]
+    private Collection $queues;
+
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: Recommendation::class, cascade: ['persist', 'remove'])]
     private Collection $receivedRecommendations;
 
 
@@ -42,9 +45,10 @@ class User
         $this->receivedRecommendations = new ArrayCollection();
     }
 
-    public function addRecommendation(Recommendation $recommendation)
+    public function addRecommendation(Recommendation $recommendation) : self
     {
         $this->receivedRecommendations[] = $recommendation;
+        return $this;
     }
 
     public function getReceivedRecommendations()
@@ -63,9 +67,10 @@ class User
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -79,9 +84,10 @@ class User
     /**
      * @param int $tgId
      */
-    public function setTgId(int $tgId): void
+    public function setTgId(int $tgId): self
     {
         $this->tgId = $tgId;
+        return $this;
     }
 
     /**
@@ -95,9 +101,10 @@ class User
     /**
      * @param string|null $tgUsername
      */
-    public function setTgUsername(?string $tgUsername): void
+    public function setTgUsername(?string $tgUsername): self
     {
         $this->tgUsername = $tgUsername;
+        return $this;
     }
 
     /**
@@ -111,9 +118,10 @@ class User
     /**
      * @param Role $role
      */
-    public function setRole(Role $role): void
+    public function setRole(Role $role): self
     {
         $this->role = $role;
+        return $this;
     }
 
     /**
@@ -127,9 +135,27 @@ class User
     /**
      * @param int $group
      */
-    public function setGroup(int $group): void
+    public function setGroup(int $group): self
     {
         $this->group = $group;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getQueues(): Collection
+    {
+        return $this->queues;
+    }
+
+    /**
+     * @param Collection $queues
+     */
+    public function setQueues(Collection $queues): self
+    {
+        $this->queues = $queues;
+        return $this;
     }
 
 }

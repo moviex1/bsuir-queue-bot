@@ -10,11 +10,10 @@ use Doctrine\ORM\EntityRepository;
 
 class QueueRepository extends EntityRepository
 {
-    public function getAllByDate(int $group, DateTime $date): array
+    public function getAllByDate(DateTime $date): array
     {
         return $this->findBy([
             'lessonDate' => $date,
-            'group' => $group
         ], ['place' => 'ASC']);
     }
 
@@ -32,7 +31,6 @@ class QueueRepository extends EntityRepository
             'lessonDate' => new DateTime($date),
             'place' => $place
         ]);
-
     }
 
     public function addToQueue($data)
@@ -40,9 +38,9 @@ class QueueRepository extends EntityRepository
         $entityManager = App::entityManager();
 
         $queue = new Queue();
-        $queue->setLessonDate($data['date']);
-        $queue->setUser($data['user']);
-        $queue->setPlace($data['place']);
+        $queue->setLessonDate($data['lessonDate'])
+              ->setUser($data['user'])
+              ->setPlace($data['place']);
 
         $entityManager->persist($queue);
         $entityManager->flush();

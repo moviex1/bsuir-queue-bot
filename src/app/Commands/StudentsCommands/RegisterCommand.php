@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Commands;
+namespace App\Commands\StudentsCommands;
 
 use App\App;
+use App\Commands\Command;
 use App\States\EnteringGroupState;
 use Database\Entity\User;
 

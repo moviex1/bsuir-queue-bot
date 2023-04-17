@@ -6,6 +6,7 @@ use App\Commands\CommandHandler;
 use App\Commands\TelegramCommandFactory;
 use App\States\StateHandler;
 use App\States\StateManager;
+use Database\Entity\User;
 
 class App
 {
@@ -19,9 +20,9 @@ class App
     {
         static::$entityManager = new DB($config->db);
         $this->stateManager = new StateManager();
-        $this->stateHandler = new StateHandler($this->telegram, $this->stateManager);
+        $this->stateHandler = new StateHandler($this->stateManager);
         $this->commandFactory = new TelegramCommandFactory($telegram, $this->stateManager);
-        $this->commandHandler = new CommandHandler($this->commandFactory);
+        $this->commandHandler = new CommandHandler($this->commandFactory, $this->telegram);
     }
 
     public static function entityManager(): DB
@@ -69,7 +70,6 @@ class App
     {
         $message = $update['message'] ?? null;
         $message = $message ?? $update['callback_query']['message'];
-
         if (!$message) {
             return;
         }
@@ -80,20 +80,20 @@ class App
             return;
         }
 
-        $params = $this->getCommandParams($message, $text, $update, $this->isCallback($update));
+        $params = $this->getCommandParams($message, $text, $update, $this->isCallbackQuery($update));
 
 
-        if (!$this->stateHandler->hasState($params)) {
+        if (!$this->stateHandler->hasState($params) && !$this->isCancelCommand($message['text']) ) {
             $this->stateHandler->handleInput($params);
             return;
         };
 
         $this->commandFactory->setParams($params);
 
-        $this->commandHandler->handleCommand($text);
+        $this->commandHandler->handleCommand($params);
     }
 
-    private function isCallback(array $update) : bool
+    private function isCallbackQuery(array $update) : bool
     {
         return array_key_exists('callback_query',$update);
     }
@@ -102,7 +102,7 @@ class App
     {
         if ($callback) {
             $callbackQuery = $update['callback_query'];
-            $result = [
+            return [
                 'chat_id' => $message['chat']['id'],
                 'message_id' => $message['message_id'],
                 'user_id' => $callbackQuery['from']['id'],
@@ -111,7 +111,7 @@ class App
                 'callback_data' => $callbackQuery['data']
             ];
         } else {
-            $result = [
+            return [
                 'chat_id' => $message['chat']['id'],
                 'message_id' => $message['message_id'],
                 'user_id' => $message['from']['id'],
@@ -121,7 +121,10 @@ class App
             ];
         }
 
-        return $result;
+    }
+
+    private function isCancelCommand(string $message){
+        return explode("@BsuirQueueBot",$message)[0] == '/cancel';
     }
 
 }

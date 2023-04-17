@@ -3,6 +3,7 @@
 namespace App;
 
 use Curl\Curl;
+use DateTime;
 
 date_default_timezone_set('Europe/Moscow');
 
@@ -102,11 +103,6 @@ class Schedule
         } else {
             return null;
         }
-    }
-
-    public static function getNextLesson(string $group) : ?array
-    {
-        return self::getLessons($group)[0];
     }
 }
 

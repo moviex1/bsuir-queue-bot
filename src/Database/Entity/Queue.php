@@ -20,18 +20,18 @@ class Queue
     #[ORM\Column(type: Types::SMALLINT)]
     private int $place;
 
-    #[ORM\Column(name:'lesson_date')]
+    #[ORM\Column(name: 'lesson_date')]
     private DateTime $lessonDate;
 
     #[ORM\Column(type: Types::SMALLINT)]
     private int $emoji;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
     private User $user;
 
     public function __construct()
     {
-        $this->emoji = rand(0,112);
+        $this->emoji = rand(0, 112);
     }
 
 
@@ -59,11 +59,11 @@ class Queue
     /**
      * @param DateTime $lessonDate
      */
-    public function setLessonDate(DateTime $lessonDate): void
+    public function setLessonDate(DateTime $lessonDate): self
     {
         $this->lessonDate = $lessonDate;
+        return $this;
     }
-
 
 
     /**
@@ -77,9 +77,10 @@ class Queue
     /**
      * @param User $user
      */
-    public function setUser(User $user): void
+    public function setUser(User $user): self
     {
         $this->user = $user;
+        return $this;
     }
 
     /**
@@ -93,9 +94,10 @@ class Queue
     /**
      * @param int $place
      */
-    public function setPlace(int $place): void
+    public function setPlace(int $place): self
     {
         $this->place = $place;
+        return $this;
     }
 
     /**
@@ -109,8 +111,9 @@ class Queue
     /**
      * @param int $id
      */
-    public function setId(int $id): void
+    public function setId(int $id): self
     {
         $this->id = $id;
+        return $this;
     }
 }

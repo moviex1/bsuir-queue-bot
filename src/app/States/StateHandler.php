@@ -6,7 +6,7 @@ use App\Telegram;
 
 class StateHandler
 {
-    public function __construct(private Telegram $telegram, private StateManager $stateManager)
+    public function __construct(private StateManager $stateManager)
     {
     }
 
@@ -14,7 +14,7 @@ class StateHandler
     {
         $stateObject = $this->stateManager->getCurrentState($params['user_id'])['state'] ?? null;
 
-        $stateObject?->handleInput($this->telegram, $this->stateManager, $params);
+        $stateObject?->handleInput($params);
     }
 
     public function hasState(array $params): bool
