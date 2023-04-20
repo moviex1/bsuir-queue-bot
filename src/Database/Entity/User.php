@@ -30,6 +30,9 @@ class User
     #[ORM\Column(name: '`group`', type: Types::INTEGER)]
     private int $group;
 
+    #[ORM\Column(name: 'git', type: Types::STRING)]
+    private string|null $git = null;
+
     #[ORM\Column(enumType: Role::class)]
     private Role $role = Role::Student;
 
@@ -155,6 +158,24 @@ class User
     public function setQueues(Collection $queues): self
     {
         $this->queues = $queues;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGit(): string
+    {
+        return $this->git;
+    }
+
+    /**
+     * @param string $git
+     */
+    public function setGit(string $git): self
+    {
+        $this->git = $git;
+
         return $this;
     }
 

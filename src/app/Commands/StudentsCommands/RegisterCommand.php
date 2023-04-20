@@ -3,11 +3,11 @@
 namespace App\Commands\StudentsCommands;
 
 use App\App;
-use App\Commands\Command;
+use App\Commands\StudentCommand;
 use App\States\EnteringGroupState;
 use Database\Entity\User;
 
-class RegisterCommand extends Command
+class RegisterCommand extends StudentCommand
 {
 
     public function execute(): void

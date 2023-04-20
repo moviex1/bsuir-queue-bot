@@ -4,6 +4,7 @@ namespace App\States;
 
 
 use App\App;
+use App\Github;
 use App\Message;
 use App\Schedule;
 use Database\Entity\Queue;
@@ -19,30 +20,57 @@ class ChoosingDateState extends State
         $buttons = $this->stateManager->getStateData($user->getTgId(), 'buttons');
         $command = $this->stateManager->getStateData($user->getTgId(), 'command');
         $messageId = $this->stateManager->getMessageId($user->getTgId());
+        $callbackData = $params['callback_data'];
 
-        if ($params['callback_data'] === null) {
-            $this->telegram->deleteMessage($params['chat_id'], $messageId);
-            $message = $this->telegram->sendButtons($params['chat_id'], $buttons);
-            $newMessageId = $this->getMessageId($message);
-            $this->stateManager->changeMessageId($params['user_id'], $newMessageId);
-        } else {
-            $lessonDate = new DateTime(
-                Schedule::getLessons($user->getGroup())[$params['callback_data']]['date']
-            );
+        if ($callbackData === null) {
+            $this->resendButtons($params['chat_id'], $messageId, $buttons, $params['user_id']);
+            return;
+        }
 
-            $this->telegram->deleteMessage($params['chat_id'], $messageId);
-            switch ($command) {
-                case 'queue':
-                    $this->handleQueueCommand($user, $lessonDate, $params['chat_id']);
-                    break;
-                case 'list':
-                    $this->handleListCommand($user, $lessonDate, $params['chat_id']);
-                    break;
-                default:
-                    break;
-            }
+        if (!$this->checkDate($user, $callbackData)) {
+            $this->telegram->sendMessage($params['chat_id'], Message::make('star'));
+            $this->resendButtons($params['chat_id'], $messageId, $buttons, $params['user_id']);
+            return;
+        }
+
+        $lessonDate = new DateTime(
+            Schedule::getLessons($user->getGroup())[$callbackData]['date']
+        );
+
+        $this->telegram->deleteMessage($params['chat_id'], $messageId);
+        switch ($command) {
+            case 'queue':
+                $this->handleQueueCommand($user, $lessonDate, $params['chat_id']);
+                break;
+            case 'list':
+                $this->handleListCommand($user, $lessonDate, $params['chat_id']);
+                break;
+            default:
+                break;
         }
     }
+
+    private function resendButtons(int $chatId, int $messageId, array $buttons, int $userId): void
+    {
+        $this->telegram->deleteMessage($chatId, $messageId);
+        $message = $this->telegram->sendButtons($chatId, $buttons);
+        $newMessageId = $this->getMessageId($message);
+        $this->stateManager->changeMessageId($userId, $newMessageId);
+    }
+
+    private function checkDate(User $user, string $callbackData): bool
+    {
+        $starredUsers = Github::getStaredUsers();
+        if ($callbackData == '1') {
+            if (!$user->getGit()) {
+                return false;
+            }
+            return in_array($user->getGit(), $starredUsers);
+        }
+
+        return true;
+    }
+
 
     private function handleListCommand(User $user, DateTime $lessonDate, int $chatId)
     {

@@ -2,10 +2,12 @@
 
 namespace Database\Entity;
 
+use Database\Repository\RecommendationRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: RecommendationRepository::class)]
 #[ORM\Table(name:'recommendations')]
 class Recommendation
 {
@@ -25,6 +27,14 @@ class Recommendation
     #[ORM\Column(type: Types::TEXT)]
     private string|null $recommendation;
 
+    #[ORM\Column]
+    private DateTime $created_at;
+
+    public function __construct()
+    {
+        $this->created_at = new DateTime();
+    }
+
     /**
      * @return int|null
      */
@@ -36,9 +46,10 @@ class Recommendation
     /**
      * @param int|null $id
      */
-    public function setId(?int $id): void
+    public function setId(?int $id): self
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -52,9 +63,10 @@ class Recommendation
     /**
      * @param User $teacher
      */
-    public function setTeacher(User $teacher): void
+    public function setTeacher(User $teacher): self
     {
         $this->teacher = $teacher;
+        return $this;
     }
 
     /**
@@ -68,9 +80,10 @@ class Recommendation
     /**
      * @param User $student
      */
-    public function setStudent(User $student): void
+    public function setStudent(User $student): self
     {
         $this->student = $student;
+        return $this;
     }
 
     /**
@@ -84,9 +97,26 @@ class Recommendation
     /**
      * @param string|null $recommendation
      */
-    public function setRecommendation(?string $recommendation): void
+    public function setRecommendation(?string $recommendation): self
     {
         $this->recommendation = $recommendation;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param DateTime $created_at
+     */
+    public function setCreatedAt(DateTime $created_at): void
+    {
+        $this->created_at = $created_at;
     }
 
 }

@@ -9,14 +9,14 @@ use Doctrine\ORM\EntityRepository;
 
 class UserRepository extends EntityRepository
 {
-    public function create(array $data) : User
+    public function create(array $data): User
     {
         $user = new User();
         $user->setGroup($data['group'])
-             ->setName($data['name'])
-             ->setTgUsername($data['tg_username'])
-             ->setTgId($data['tg_id'])
-             ->setRole($data['role']);
+            ->setName($data['name'])
+            ->setTgUsername($data['tg_username'])
+            ->setTgId($data['tg_id'])
+            ->setRole($data['role']);
 
         $entityManager = App::entityManager();
         $entityManager->persist($user);
@@ -24,7 +24,14 @@ class UserRepository extends EntityRepository
         return $user;
     }
 
-    public function getById($id) : ?User
+    public function addGit(User $user, string $git)
+    {
+        $user->setGit($git);
+        App::entityManager()->persist($user);
+        App::entityManager()->flush();
+    }
+
+    public function getById($id): ?User
     {
         return $this->findOneBy(['tgId' => $id]);
     }

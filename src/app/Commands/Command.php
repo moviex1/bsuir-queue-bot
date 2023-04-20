@@ -5,11 +5,8 @@ namespace App\Commands;
 use App\States\StateManager;
 use App\Telegram;
 
-abstract class Command
+interface Command
 {
-    public function __construct(protected Telegram $telegram,protected array $params, protected StateManager $stateManager)
-    {
-    }
 
-    abstract public function execute() : void;
+    public function execute() : void;
 }

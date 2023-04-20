@@ -3,24 +3,23 @@
 namespace App\States;
 
 
+use App\App;
+use Database\Entity\Recommendation;
+use Database\Entity\User;
+
 class EnteringRecommendationState extends State
 {
 
-    private function getMessageId(string $message): ?int
-    {
-        return json_decode($message, true)['result']['message_id'] ?? null;
-    }
-
     public function handleInput(array $params): void
     {
-        if ($params['message'] != 'state') {
-            $messageId = $this->stateManager->getCurrentState($params['user_id'])['message_id'];
-            $this->telegram->deleteMessage($params['chat_id'], $messageId);
-            $message = $this->telegram->sendMessage($params['chat_id'], "State message");
-            $newMessageId = $this->getMessageId($message);
-            $this->stateManager->setState($params['user_id'], $newMessageId, $this);
-        } else {
-            $this->stateManager->removeUserState($params['user_id']);
-        }
+        $student = $this->stateManager->getStateData($params['user_id'], 'student');
+        $teacher = App::entityManager()->getRepository(User::class)->findOneByTgId($params['user_id']);
+        $this->stateManager->removeUserState($params['user_id']);
+        App::entityManager()->getRepository(Recommendation::class)->addRecommendation([
+            'recommendation' => $params['message'],
+            'student' => $student,
+            'teacher' => $teacher
+        ]);
+        $this->telegram->sendMessage($params['chat_id'], 'You entered recommendation:' . PHP_EOL . $params['message']);
     }
 }

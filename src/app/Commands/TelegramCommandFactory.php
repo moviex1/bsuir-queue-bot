@@ -15,23 +15,27 @@ class TelegramCommandFactory extends CommandFactory
     }
 
 
-    public function createNewCommand(string $message) : ?Command
+    public function createNewCommand(string $message): ?Command
     {
         $command = explode('@', $message)[0];
-        $classname = str_replace('/', '',$command, $replaces) . 'Command';
-        switch(true){
+        $classname = str_replace('/', '', $command, $replaces) . 'Command';
+
+        switch (true) {
             case class_exists(__NAMESPACE__ . '\\' . 'StudentsCommands' . '\\' . $classname):
-                $classname =  __NAMESPACE__ . '\\' . 'StudentsCommands' . '\\' . $classname;
+                $classname = __NAMESPACE__ . '\\' . 'StudentsCommands' . '\\' . $classname;
+                break;
+            case class_exists(__NAMESPACE__ . '\\' . 'TeacherCommands' . '\\' . $classname):
+                $classname = __NAMESPACE__ . '\\' . 'TeacherCommands' . '\\' . $classname;
                 break;
             default:
                 break;
         }
-        if(class_exists($classname) && $replaces == 1 && $command[0] == '/'){
+
+        if (class_exists($classname) && $replaces == 1 && $command[0] == '/') {
             return new $classname($this->telegram, $this->params, $this->stateManager);
         }
         return null;
     }
-
 
 
 }

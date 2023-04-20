@@ -4,9 +4,10 @@ namespace App\Commands\StudentsCommands;
 
 use App\App;
 use App\Commands\Command;
+use App\Commands\StudentCommand;
 use Database\Entity\User;
 
-class LogoutCommand extends Command
+class LogoutCommand extends StudentCommand
 {
 
     public function execute(): void

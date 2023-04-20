@@ -4,12 +4,13 @@ namespace App\Commands\StudentsCommands;
 
 use App\App;
 use App\Commands\Command;
+use App\Commands\StudentCommand;
 use App\Message;
 use App\Schedule;
 use Database\Entity\Queue;
 use Database\Entity\User;
 
-class RemoveCommand extends Command
+class RemoveCommand extends StudentCommand
 {
 
     public function execute(): void

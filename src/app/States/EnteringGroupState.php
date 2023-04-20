@@ -3,14 +3,13 @@
 namespace App\States;
 
 use App\Schedule;
-use App\Telegram;
 
 class EnteringGroupState extends State
 {
 
     public function handleInput(array $params): void
     {
-        if(!is_null(Schedule::getLessons($params['message']))){
+        if(Schedule::getLessons($params['message'])){
             $this->stateManager->addDataToState($params['user_id'],[
                 'group' => $params['message']
             ]);
