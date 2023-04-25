@@ -3,6 +3,7 @@
 namespace App\States;
 
 use App\App;
+use App\Message;
 use App\Schedule;
 use Database\Entity\Queue;
 use Database\Entity\User;
@@ -14,19 +15,21 @@ class EnteringPlaceState extends State
     public function handleInput(array $params): void
     {
         $user = $this->stateManager->getStateData($params['user_id'], 'user');
-        if (Validation::validateNum($params['message'])) {
-            $place = $params['message'];
-            $lessonDate = $this->stateManager->getStateData($user->getTgId(), 'lessonDate');
+        $place = $params['message'];
 
-            if ($this->isPlaceTaken($place, $lessonDate)) {
-                $this->telegram->sendMessage($params['user_id'], 'this place is taken');
-                return;
-            }
-
-            $this->handleQueue($user, $lessonDate, $place);
-        } else {
-            $this->telegram->sendMessage($user->getTgId(),'Enter number between 1 and 30');
+        if (!Validation::validateNum($place)) {
+            $this->telegram->sendMessage($params['chat_id'], '<b>Место должно быть от 1 до 30🐹</b>');
+            return;
         }
+
+        $lessonDate = $this->stateManager->getStateData($user->getTgId(), 'lessonDate');
+
+        if ($this->isPlaceTaken($place, $lessonDate)) {
+            $this->telegram->sendMessage($params['chat_id'], Message::make('queue.reservedBySomeone'));
+            return;
+        }
+
+        $this->handleQueue($user, $lessonDate, $place);
     }
 
     private function handleQueue(User $user, DateTime $lessonDate, int $place): void
@@ -37,8 +40,15 @@ class EnteringPlaceState extends State
             'lessonDate' => $lessonDate,
             'place' => $place
         ]);
+
         $this->stateManager->removeUserState($user->getTgId());
-        $this->telegram->sendMessage($user->getTgId(), 'You take ' . $place . ' place');
+        $this->telegram->sendMessage(
+            $user->getTgId(),
+            Message::make('queue.queue', [
+                'place' => $place,
+                'lessonDate' => $lessonDate->format('Y-m-d h:i:s')
+            ])
+        );
     }
 
     private function isPlaceTaken(int $place, DateTime $lessonDate)

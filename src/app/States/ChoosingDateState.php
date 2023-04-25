@@ -53,7 +53,7 @@ class ChoosingDateState extends State
     private function resendButtons(int $chatId, int $messageId, array $buttons, int $userId): void
     {
         $this->telegram->deleteMessage($chatId, $messageId);
-        $message = $this->telegram->sendButtons($chatId, $buttons);
+        $message = $this->telegram->sendButtons($chatId, Message::make('buttons.dateButtons'),$buttons);
         $newMessageId = $this->getMessageId($message);
         $this->stateManager->changeMessageId($userId, $newMessageId);
     }
@@ -97,7 +97,7 @@ class ChoosingDateState extends State
             'lessonDate' => $lessonDate,
             'user' => $user
         ]);
-        $this->telegram->sendMessage($chatId, 'Choose place');
+        $this->telegram->sendMessage($chatId, Message::make('queue.choosePlace'));
     }
 
     private function getMessageId(string $message): ?int

@@ -2,7 +2,6 @@
 
 namespace App\Commands;
 
-use App\States\StateManager;
 
 abstract class CommandFactory
 {

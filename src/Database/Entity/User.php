@@ -21,16 +21,16 @@ class User
     #[ORM\Column(type: 'string')]
     private string $name;
 
-    #[ORM\Column(type: 'string', name: 'tg_username')]
+    #[ORM\Column(name: 'tg_username', type: 'string')]
     private string|null $tgUsername;
 
-    #[ORM\Column(type: Types::BIGINT, name: 'tg_id')]
+    #[ORM\Column(name: 'tg_id', type: Types::BIGINT)]
     private int $tgId;
 
     #[ORM\Column(name: '`group`', type: Types::INTEGER)]
     private int $group;
 
-    #[ORM\Column(name: 'git', type: Types::STRING)]
+    #[ORM\Column(name: 'git', type: Types::STRING, nullable: true)]
     private string|null $git = null;
 
     #[ORM\Column(enumType: Role::class)]
@@ -46,9 +46,10 @@ class User
     public function __construct()
     {
         $this->receivedRecommendations = new ArrayCollection();
+        $this->queues = new ArrayCollection();
     }
 
-    public function addRecommendation(Recommendation $recommendation) : self
+    public function addRecommendation(Recommendation $recommendation): self
     {
         $this->receivedRecommendations[] = $recommendation;
         return $this;
@@ -162,15 +163,16 @@ class User
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getGit(): string
+    public function getGit(): ?string
     {
         return $this->git;
     }
 
     /**
      * @param string $git
+     * @return self
      */
     public function setGit(string $git): self
     {

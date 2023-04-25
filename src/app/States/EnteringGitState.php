@@ -17,13 +17,13 @@ class EnteringGitState extends State
             ->findOneByGit($params['message']);
 
         if ($userWithGit) {
-            $this->telegram->sendMessage($user->getTgId(), 'Этот Github уже занят!');
+            $this->telegram->sendMessage($user->getTgId(), '<b>Этот Github уже занят!</b>');
             return;
         }
 
         $userRepository->addGit($user, $params['message']);
 
         $this->stateManager->removeUserState($user->getTgId());
-        $this->telegram->sendMessage($user->getTgId(), 'Вы успешно ввели Github');
+        $this->telegram->sendMessage($user->getTgId(), '<b>Вы успешно ввели Github!😽</b>');
     }
 }

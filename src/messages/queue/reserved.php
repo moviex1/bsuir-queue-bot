@@ -1,0 +1,1 @@
+<b>Вы уже занимаете <?=$this->queue->getPlace()?> место на <i><?=$this->queue->getLessonDate()->format('Y-m-d h:i:s')?></i> 😕</b>

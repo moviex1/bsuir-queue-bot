@@ -4,6 +4,7 @@ namespace App\Commands\StudentsCommands;
 
 use App\App;
 use App\Commands\StudentCommand;
+use App\Message;
 use App\States\EnteringGroupState;
 use Database\Entity\User;
 
@@ -22,9 +23,9 @@ class RegisterCommand extends StudentCommand
                 new EnteringGroupState($this->telegram, $this->stateManager)
             );
 
-            $this->telegram->sendMessage($this->params['chat_id'], 'Enter group');
+            $this->telegram->sendMessage($this->params['chat_id'], Message::make('register.enterGroup'));
         } else {
-            $this->telegram->sendMessage($this->params['chat_id'], 'You are already registered');
+            $this->telegram->sendMessage($this->params['chat_id'], Message::make('register.registered'));
         }
     }
 

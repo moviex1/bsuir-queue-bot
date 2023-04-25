@@ -4,6 +4,7 @@ namespace App\Commands\StudentsCommands;
 
 use App\App;
 use App\Commands\StudentCommand;
+use App\Message;
 use App\Schedule;
 use App\States\ChoosingDateState;
 use Database\Entity\User;
@@ -22,7 +23,11 @@ class ListCommand extends StudentCommand
          */
         $user = App::entityManager()->getRepository(User::class)->findOneByTgId($this->params['user_id']);
 
-        $response = $this->telegram->sendButtons($this->params['chat_id'], $this->getButtons($user->getGroup()));
+        $response = $this->telegram->sendButtons(
+            $this->params['chat_id'],
+            Message::make('buttons.dateButtons'),
+            $this->getButtons($user->getGroup())
+        );
         $this->stateManager->setState(
             $user->getTgId(),
             $this->getButtonsId($response),

@@ -41,7 +41,7 @@ class App
         }
     }
 
-    private function processUpdates(&$lastUpdatedId)
+    private function processUpdates(int &$lastUpdatedId)
     {
         $updates = $this->getUpdates($lastUpdatedId);
         foreach ($updates as $update) {
@@ -50,7 +50,7 @@ class App
         }
     }
 
-    private function getUpdates($lastUpdatedId)
+    private function getUpdates(int $lastUpdatedId)
     {
         $updates = json_decode(
             $this->telegram->getUpdates($lastUpdatedId),
@@ -66,7 +66,7 @@ class App
         return $result;
     }
 
-    private function processUpdate($update)
+    private function processUpdate(array $update)
     {
         $message = $update['message'] ?? null;
         $message = $message ?? $update['callback_query']['message'];
@@ -83,7 +83,10 @@ class App
         $params = $this->getCommandParams($message, $text, $update, $this->isCallbackQuery($update));
 
 
-        if (!$this->stateHandler->hasState($params) && !$this->isCancelCommand($message['text']) ) {
+        if (!$this->stateHandler->hasState($params) && !$this->isCancelCommand($message['text'])) {
+            if ($params['user_id'] != $params['chat_id']) {
+                return;
+            }
             $this->stateHandler->handleInput($params);
             return;
         };
@@ -93,9 +96,9 @@ class App
         $this->commandHandler->handleCommand($params);
     }
 
-    private function isCallbackQuery(array $update) : bool
+    private function isCallbackQuery(array $update): bool
     {
-        return array_key_exists('callback_query',$update);
+        return array_key_exists('callback_query', $update);
     }
 
     private function getCommandParams(array $message, string $text, array $update, bool $callback = false): array
@@ -120,11 +123,11 @@ class App
                 'callback_data' => null
             ];
         }
-
     }
 
-    private function isCancelCommand(string $message){
-        return explode("@BsuirQueueBot",$message)[0] == '/cancel';
+    private function isCancelCommand(string $message)
+    {
+        return explode("@BsuirQueueBot", $message)[0] == '/cancel';
     }
 
 }

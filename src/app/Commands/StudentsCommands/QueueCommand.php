@@ -4,6 +4,7 @@ namespace App\Commands\StudentsCommands;
 
 use App\App;
 use App\Commands\StudentCommand;
+use App\Message;
 use App\Schedule;
 use App\States\ChoosingDateState;
 use Database\Entity\Queue;
@@ -14,18 +15,21 @@ class QueueCommand extends StudentCommand
 
     public function execute(): void
     {
-        $user = App::entityManager()->getRepository(User::class)->getById($this->params['user_id']);
+        $user = App::entityManager()
+            ->getRepository(User::class)
+            ->getById($this->params['user_id']);
 
-        $this->checkIfUserExist($user);
+        $queue = App::entityManager()
+            ->getRepository(Queue::class)
+            ->getUserQueue($user);
 
-
-        if (!is_null($this->getUserRecentQueues($user))) {
-            $this->telegram->sendMessage($user->getTgId(), 'You are already in queue');
+        if ($queue) {
+            $this->telegram->sendMessage($user->getTgId(), Message::make('queue.reserved', compact('queue')));
             return;
         }
 
         $buttons = $this->getButtons($user->getGroup());
-        $response = $this->telegram->sendButtons($this->params['chat_id'], $buttons);
+        $response = $this->telegram->sendButtons($this->params['chat_id'], Message::make('buttons.dateButtons'),$buttons);
 
         $this->stateManager->setState(
             $user->getTgId(),
@@ -51,25 +55,8 @@ class QueueCommand extends StudentCommand
         ];
     }
 
-    private function checkIfUserExist(?User $user)
-    {
-
-    }
-
     private function getButtonsId(string $response): int
     {
         return json_decode($response, true)['result']['message_id'];
-    }
-
-    private function getUserRecentQueues(User $user)
-    {
-        $queueRepository = App::entityManager()->getRepository(Queue::class);
-        return $queueRepository->findOneBy([
-            'user' => $user,
-            'lessonDate' => [
-                Schedule::getLessons($user->getGroup())[0]['date'],
-                Schedule::getLessons($user->getGroup())[1]['date']
-            ]
-        ]);
     }
 }

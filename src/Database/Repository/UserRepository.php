@@ -36,4 +36,21 @@ class UserRepository extends EntityRepository
         return $this->findOneBy(['tgId' => $id]);
     }
 
+    public function deleteUser(User $user)
+    {
+        $entityManager = App::entityManager();
+        foreach ($user->getQueues() as $queue) {
+            $entityManager->remove($queue);
+        }
+        $entityManager->flush();
+
+        foreach ($user->getReceivedRecommendations() as $recommendation) {
+            $entityManager->remove($recommendation);
+        }
+        $entityManager->flush();
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+    }
+
 }

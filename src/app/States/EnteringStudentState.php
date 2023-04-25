@@ -20,10 +20,15 @@ class EnteringStudentState extends State
                 $params['user_id'],
                 new EnteringRecommendationState($this->telegram, $this->stateManager)
             );
-            $this->stateManager->addDataToState($params['user_id'],[
+            $this->stateManager->addDataToState($params['user_id'], [
                 'student' => $student
             ]);
-            $this->telegram->sendMessage($params['chat_id'], 'Enter recommendation for user ' . $student->getName());
+            $this->telegram->sendMessage(
+                $params['chat_id'],
+                '<b>Введите рекомендацию для пользователя ' . $student->getName() . '</b>'
+            );
+        } else {
+            $this->telegram->sendMessage($params['chat_id'], '<b>Пользователя с таким id нету в данной группе</b>');
         }
     }
 

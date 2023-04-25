@@ -3,6 +3,7 @@
 namespace Database\Repository;
 
 use App\App;
+use App\Schedule;
 use Database\Entity\Queue;
 use Database\Entity\User;
 use DateTime;
@@ -39,13 +40,24 @@ class QueueRepository extends EntityRepository
 
         $queue = new Queue();
         $queue->setLessonDate($data['lessonDate'])
-              ->setUser($data['user'])
-              ->setPlace($data['place']);
+            ->setUser($data['user'])
+            ->setPlace($data['place']);
 
         $entityManager->persist($queue);
         $entityManager->flush();
 
         return $queue;
+    }
+
+    public function getUserQueue(User $user)
+    {
+        return $this->findOneBy([
+            'lessonDate' => [
+                Schedule::getLessons($user->getGroup())[0]['date'],
+                Schedule::getLessons($user->getGroup())[1]['date'],
+            ],
+            'user' => $user
+        ]) ?? null;
     }
 
 }

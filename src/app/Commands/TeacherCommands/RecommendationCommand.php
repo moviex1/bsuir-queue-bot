@@ -20,7 +20,7 @@ class RecommendationCommand extends TeacherCommand
             $this->params['message_id'],
             new ChoosingGroupRecommendationState($this->telegram, $this->stateManager)
         );
-        $this->telegram->sendMessage($this->params['chat_id'], 'Enter group');
+        $this->telegram->sendMessage($this->params['chat_id'], '<b>Введите группу</b>');
     }
 
 

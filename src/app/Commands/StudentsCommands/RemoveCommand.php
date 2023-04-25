@@ -3,10 +3,8 @@
 namespace App\Commands\StudentsCommands;
 
 use App\App;
-use App\Commands\Command;
 use App\Commands\StudentCommand;
 use App\Message;
-use App\Schedule;
 use Database\Entity\Queue;
 use Database\Entity\User;
 
@@ -20,15 +18,15 @@ class RemoveCommand extends StudentCommand
          */
 
         $entityManager = App::entityManager();
-        $user = $entityManager->getRepository(User::class)->findOneByTgId($this->params['user_id']);
-        $queue = $entityManager->getRepository(Queue::class)->findOneBy([
-            'lessonDate' => [
-                Schedule::getLessons($user->getGroup())[0]['date'],
-                Schedule::getLessons($user->getGroup())[1]['date']
-            ],
-            'user' => $user
-        ]);
-        if($queue){
+        $user = $entityManager
+            ->getRepository(User::class)
+            ->findOneByTgId($this->params['user_id']);
+
+        $queue = $entityManager
+            ->getRepository(Queue::class)
+            ->getUserQueue($user);
+
+        if ($queue) {
             $entityManager->remove($queue);
             $entityManager->flush();
         }

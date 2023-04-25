@@ -54,7 +54,7 @@ class Telegram
         $this->sendMessage($_ENV['TELEGRAM_REPORT_CHAT_ID'], Message::make("errors.default", $errors));
     }
 
-    public function sendButtons(int $chat_id, array $buttons)
+    public function sendButtons(int $chat_id, string $text, array $buttons)
     {
         $button = json_encode([
             'inline_keyboard' => [
@@ -63,8 +63,9 @@ class Telegram
         ]);
         return $this->bot('sendMessage', [
             'chat_id' => $chat_id,
-            'text' => 'Buttons',
+            'text' => $text,
             'reply_markup' => $button,
+            'parse_mode' => 'html'
 
         ]);
     }

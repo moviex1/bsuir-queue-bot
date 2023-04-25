@@ -13,7 +13,7 @@ class Validation
     public static function validateNum(string $num): bool
     {
         if (is_numeric($num)) {
-            return is_int(+$num) && (+$num) > 0 && (+$num) <= 30;
+            return is_int(+$num) && +$num > 0 && +$num <= 30;
         }
         return false;
     }

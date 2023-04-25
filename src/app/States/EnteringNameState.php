@@ -4,6 +4,7 @@ namespace App\States;
 
 use App\App;
 use App\Enums\Role;
+use App\Message;
 use App\Telegram;
 use Database\Entity\User;
 use Helpers\Validation;
@@ -20,10 +21,10 @@ class EnteringNameState extends State
                 'tg_username' => $params['tg_username'],
                 'group' => $this->stateManager->getCurrentState($params['user_id'])['data']['group']
             ]);
-            $this->telegram->sendMessage($params['chat_id'], 'You successfully registered');
+            $this->telegram->sendMessage($params['chat_id'], Message::make('register.success'));
             $this->stateManager->removeUserState($params['user_id']);
         } else{
-            $this->telegram->sendMessage($params['user_id'], 'name should be less than 50 characters');
+            $this->telegram->sendMessage($params['user_id'], '<b>Имя должно быть менее 50 символов!</b>');
         }
     }
 }

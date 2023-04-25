@@ -3,10 +3,8 @@
 namespace App\Commands\StudentsCommands;
 
 use App\App;
-use App\Commands\Command;
 use App\Commands\StudentCommand;
 use App\Message;
-use App\Schedule;
 use Database\Entity\Queue;
 use Database\Entity\User;
 
@@ -19,14 +17,14 @@ class ShowCommand extends StudentCommand
          * otherwise sends him a message that he is not in the queue
          */
 
-        $user = App::entityManager()->getRepository(User::class)->findOneByTgId($this->params['user_id']);
-        $queue = App::entityManager()->getRepository(Queue::class)->findOneBy([
-            'lessonDate' => [
-                Schedule::getLessons($user->getGroup())[0]['date'],
-                Schedule::getLessons($user->getGroup())[1]['date'],
-            ],
-            'user' => $user
-        ]);
+        $user = App::entityManager()
+            ->getRepository(User::class)
+            ->findOneByTgId($this->params['user_id']);
+
+        $queue = App::entityManager()
+            ->getRepository(Queue::class)
+            ->getUserQueue($user);
+
         $this->telegram->sendMessage(
             $this->params['chat_id'],
             Message::make('show', [

@@ -2,9 +2,6 @@
 
 namespace App\Commands;
 
-use App\States\StateManager;
-use App\Telegram;
-
 interface Command
 {
 

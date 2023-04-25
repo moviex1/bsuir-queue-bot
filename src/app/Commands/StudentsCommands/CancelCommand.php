@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Commands;
+namespace App\Commands\StudentsCommands;
 
-use App\App;
-use Database\Entity\User;
+use App\Commands\StudentCommand;
 
-class CancelCommand extends Command
+class CancelCommand extends StudentCommand
 {
 
     public function execute(): void
@@ -14,9 +13,9 @@ class CancelCommand extends Command
             $messageId = $this->stateManager->getMessageId($this->params['user_id']);
             $this->stateManager->removeUserState($this->params['user_id']);
             $this->telegram->deleteMessage($this->params['chat_id'], $messageId);
-            $this->telegram->sendMessage($this->params['chat_id'], 'You canceled entering');
+            $this->telegram->sendMessage($this->params['chat_id'], '<b>Вы отменили ввод</b>');
         } else {
-            $this->telegram->sendMessage($this->params['chat_id'], 'You dont have anything to cancel');
+            $this->telegram->sendMessage($this->params['chat_id'], '<b>У вас нету активного ввода</b>');
         }
     }
 
