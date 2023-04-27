@@ -78,7 +78,7 @@ interface State
 }
 ```
 
-Each State hadnle input in different ways.
+Each State handle input in different ways.
 
 ## Other
 
