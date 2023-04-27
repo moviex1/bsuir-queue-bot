@@ -18,7 +18,7 @@ abstract class TeacherCommand implements Command
     ) {
     }
 
-    protected function checkIfTeacher(User $user)
+    protected function checkIfTeacher(User $user) : bool
     {
         return $user->getRole() == $this->role;
     }

@@ -5,6 +5,7 @@ namespace App;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Exception\MissingMappingDriverImplementation;
 use Doctrine\ORM\ORMSetup;
 
 /**
@@ -15,6 +16,10 @@ class DB
 {
     private EntityManager $entityManager;
 
+    /**
+     * @param array $config
+     * @throws MissingMappingDriverImplementation
+     */
     public function __construct(array $config)
     {
         try {

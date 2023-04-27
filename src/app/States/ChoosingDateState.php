@@ -53,14 +53,15 @@ class ChoosingDateState extends State
     private function resendButtons(int $chatId, int $messageId, array $buttons, int $userId): void
     {
         $this->telegram->deleteMessage($chatId, $messageId);
-        $message = $this->telegram->sendButtons($chatId, Message::make('buttons.dateButtons'),$buttons);
+        $message = $this->telegram->sendButtons($chatId, Message::make('buttons.dateButtons'), $buttons);
         $newMessageId = $this->getMessageId($message);
         $this->stateManager->changeMessageId($userId, $newMessageId);
     }
 
     private function checkDate(User $user, string $callbackData): bool
     {
-        $starredUsers = Github::getStaredUsers();
+        $github = new Github('moviex1', 'bsuir-queue-bot');
+        $starredUsers = $github->getStaredUsers();
         if ($callbackData == '1') {
             if (!$user->getGit()) {
                 return false;

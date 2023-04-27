@@ -10,11 +10,11 @@ date_default_timezone_set('Europe/Moscow');
 
 class Schedule
 {
-
+    private const BSUIR_API = 'https://iis.bsuir.by/api/v1';
 
     private static function getGroupSchedule(string $group): ?array
     {
-        $urlGroupQuery = 'https://iis.bsuir.by/api/v1/schedule?studentGroup=';
+        $urlGroupQuery = self::BSUIR_API . '/schedule?studentGroup=';
         $curl = (new Curl())->get($urlGroupQuery . $group);
         if ($curl->isSuccess()) {
             $data = json_decode($curl->response, true)['schedules'];
@@ -27,7 +27,7 @@ class Schedule
 
     private static function getCurrentWeek(): ?string
     {
-        $urlCurrentWeek = 'https://iis.bsuir.by/api/v1/schedule/current-week';
+        $urlCurrentWeek = self::BSUIR_API . '/schedule/current-week';
         $curl = (new Curl())->get($urlCurrentWeek);
         if ($curl->isSuccess()) {
             $currentWeek = $curl->response;
@@ -93,7 +93,7 @@ class Schedule
         return $lessons;
     }
 
-    public static function getLessons(string $group): ?array
+    public static function getLessons(string $group): array
     {
         $schedules = self::getGroupSchedule($group);
         $currentWeek = self::getCurrentWeek();
@@ -101,7 +101,7 @@ class Schedule
         if ($schedules && $currentWeek) {
             return self::parseSchedule($schedules, $currentWeek);
         } else {
-            return null;
+            return [];
         }
     }
 }

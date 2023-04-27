@@ -6,32 +6,34 @@ use Curl\Curl;
 
 class Github
 {
-    private static string $api = 'https://api.github.com/';
-    private static string $owner = 'moviex1';
-    private static string $repo = 'bsuir-queue-bot';
+    private const GITHUB_API = 'https://api.github.com/';
 
-    private static function queryBuilder(string $path, array $params = []): string|bool|null
+    public function __construct(private readonly string $owner, private readonly string $repository)
+    {
+    }
+
+    public function getStaredUsers(): array
+    {
+        $path = 'repos/' . $this->owner . '/' . $this->repository . '/stargazers';
+        $response = $this->queryBuilder($path);
+        $stargazers = json_decode($response, true);
+        return array_map(fn(array $stargazer) => $stargazer['login'], $stargazers);
+    }
+
+    /**
+     * @param string $path
+     * @param array $params
+     * @return string|bool|null
+     */
+    private function queryBuilder(string $path, array $params = []): string|bool|null
     {
         $curl = (new Curl())->get(
-            self::$api . "{$path}",
+            self::GITHUB_API . "{$path}",
             $params
         );
-        if ($curl->isSuccess()) {
-            return $curl->response;
-        }
-        return $curl->getErrorMessage();
+
+        return $curl->isSuccess() ? $curl->response : $curl->getErrorMessage();
     }
 
-    public static function getStaredUsers(): array
-    {
-        $path = 'repos/' . self::$owner . '/' . self::$repo . '/stargazers';
-        $response = self::queryBuilder($path);
-        $stargazers = json_decode($response, true);
-        $usernames = [];
-        foreach ($stargazers as $stargazer){
-            $usernames[] = $stargazer['login'];
-        }
-        return $usernames;
-    }
 
 }

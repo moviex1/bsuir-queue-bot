@@ -4,16 +4,14 @@ namespace App;
 
 use Curl\Curl;
 
-use Database\Entity\Queue;
-
-use Helpers\Validation;
-
-
 class Telegram
 {
-    private $telegramApi = 'https://api.telegram.org/bot';
+    private const TELEGRAM_API = 'https://api.telegram.org/bot';
 
-    public function __construct(private string $botToken)
+    /**
+     * @param string $botToken
+     */
+    public function __construct(private readonly string $botToken)
     {
     }
 
@@ -24,7 +22,7 @@ class Telegram
          */
 
         $curl = (new Curl())->get(
-            $this->telegramApi . $this->botToken . "/{$method}",
+            self::TELEGRAM_API . $this->botToken . "/{$method}",
             $params
         );
         if ($curl->isSuccess()) {
@@ -54,7 +52,7 @@ class Telegram
         $this->sendMessage($_ENV['TELEGRAM_REPORT_CHAT_ID'], Message::make("errors.default", $errors));
     }
 
-    public function sendButtons(int $chat_id, string $text, array $buttons)
+    public function sendButtons(int $chat_id, string $text, array $buttons) : string|false|null
     {
         $button = json_encode([
             'inline_keyboard' => [
@@ -70,9 +68,9 @@ class Telegram
         ]);
     }
 
-    public function deleteMessage(int $chat_id, int $message_id)
+    public function deleteMessage(int $chat_id, int $message_id) : string|false|null
     {
-        $this->bot('deleteMessage', ['chat_id' => $chat_id, 'message_id' => $message_id]);
+        return $this->bot('deleteMessage', ['chat_id' => $chat_id, 'message_id' => $message_id]);
     }
 
 }

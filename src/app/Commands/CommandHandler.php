@@ -13,7 +13,7 @@ class CommandHandler
     {
     }
 
-    public function handleCommand(array $params)
+    public function handleCommand(array $params) : void
     {
         $command = $this->commandFactory->createNewCommand($params['message']);
         if (!$command) {

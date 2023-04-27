@@ -2,6 +2,7 @@
 
 namespace App;
 
+use _PHPStan_582a9cb8b\Nette\Neon\Exception;
 use App\Commands\CommandHandler;
 use App\Commands\TelegramCommandFactory;
 use App\States\StateHandler;
@@ -16,7 +17,7 @@ class App
     private StateManager $stateManager;
     private StateHandler $stateHandler;
 
-    public function __construct(private Config $config, private Telegram $telegram)
+    public function __construct(private Config $config, private readonly Telegram $telegram)
     {
         static::$entityManager = new DB($config->db);
         $this->stateManager = new StateManager();
@@ -31,7 +32,7 @@ class App
     }
 
 
-    public function run()
+    public function run(): void
     {
         $lastUpdateId = 0;
 
@@ -41,7 +42,7 @@ class App
         }
     }
 
-    private function processUpdates(int &$lastUpdatedId)
+    private function processUpdates(int &$lastUpdatedId): void
     {
         $updates = $this->getUpdates($lastUpdatedId);
         foreach ($updates as $update) {
@@ -50,12 +51,23 @@ class App
         }
     }
 
-    private function getUpdates(int $lastUpdatedId)
+    /**
+     * @param int $lastUpdatedId
+     * @return array
+     * @throws Exception
+     */
+    private function getUpdates(int $lastUpdatedId): array
     {
-        $updates = json_decode(
-            $this->telegram->getUpdates($lastUpdatedId),
-            true
-        );
+        try {
+            $updates = json_decode(
+                $this->telegram->getUpdates($lastUpdatedId),
+                true,
+                flags: JSON_THROW_ON_ERROR
+            );
+        } catch(\Exception $e){
+            throw new Exception($e->getMessage());
+        }
+
 
         $result = $updates['result'];
 
@@ -66,17 +78,17 @@ class App
         return $result;
     }
 
-    private function processUpdate(array $update)
+    private function processUpdate(array $update): void
     {
         $message = $update['message'] ?? null;
         $message = $message ?? $update['callback_query']['message'];
-        if (!$message) {
+        if (is_null($message)) {
             return;
         }
 
         $text = $message['text'] ?? null;
 
-        if (!$text) {
+        if (is_null($text)) {
             return;
         }
 
@@ -84,7 +96,7 @@ class App
 
 
         if (!$this->stateHandler->hasState($params) && !$this->isCancelCommand($message['text'])) {
-            if ($params['user_id'] != $params['chat_id']) {
+            if ($params['user_id'] !== $params['chat_id']) {
                 return;
             }
             $this->stateHandler->handleInput($params);

@@ -14,16 +14,16 @@ class Message
     }
 
 
-    public static function make(string $message, array|bool $data = [])
+    public static function make(string $message, array|bool $data = []) : self
     {
         return new static($message, $data);
     }
 
-    public function render()
+    public function render() : string
     {
         ob_start();
         include MESSAGE_PATH . "/" . str_replace(".", "/", $this->message) . ".php";
-        return (string)ob_get_clean();
+        return (string) ob_get_clean();
     }
 
     public function __toString(): string
