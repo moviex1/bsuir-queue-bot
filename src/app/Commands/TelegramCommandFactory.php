@@ -36,6 +36,4 @@ class TelegramCommandFactory extends CommandFactory
         }
         return null;
     }
-
-
 }

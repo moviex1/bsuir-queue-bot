@@ -28,12 +28,12 @@ class ListCommand extends StudentCommand
             Message::make('buttons.dateButtons'),
             $this->getButtons($user->getGroup())
         );
+
         $this->stateManager->setState(
             $user->getTgId(),
             $this->getButtonsId($response),
             new ChoosingDateState($this->telegram, $this->stateManager)
         );
-
 
         $this->stateManager->addDataToState($user->getTgId(), [
             'buttons' => $this->getButtons($user->getGroup()),

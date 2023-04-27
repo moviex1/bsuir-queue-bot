@@ -2,14 +2,7 @@
 
 namespace App\States;
 
-use App\Telegram;
-
-abstract class State
+interface State
 {
-    public function __construct(protected Telegram $telegram, protected StateManager $stateManager)
-    {
-    }
-
-    abstract public function handleInput(array $params) : void;
-
+    public function handleInput(array $params): void;
 }

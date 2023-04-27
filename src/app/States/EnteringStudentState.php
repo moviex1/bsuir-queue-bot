@@ -4,10 +4,14 @@ namespace App\States;
 
 
 use App\App;
+use App\Telegram;
 use Database\Entity\User;
 
-class EnteringStudentState extends State
+class EnteringStudentState implements State
 {
+    public function __construct(protected Telegram $telegram, protected StateManager $stateManager)
+    {
+    }
     public function handleInput(array $params): void
     {
         $group = $this->stateManager->getStateData($params['user_id'], 'group');

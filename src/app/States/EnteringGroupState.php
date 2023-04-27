@@ -4,10 +4,13 @@ namespace App\States;
 
 use App\Message;
 use App\Schedule;
+use App\Telegram;
 
-class EnteringGroupState extends State
+class EnteringGroupState implements State
 {
-
+    public function __construct(protected Telegram $telegram, protected StateManager $stateManager)
+    {
+    }
     public function handleInput(array $params): void
     {
         if(Schedule::getLessons($params['message'])){

@@ -5,12 +5,15 @@ namespace App\States;
 
 use App\App;
 use App\Message;
+use App\Telegram;
 use Database\Entity\Recommendation;
 use Database\Entity\User;
 
-class EnteringRecommendationState extends State
+class EnteringRecommendationState implements State
 {
-
+    public function __construct(protected Telegram $telegram, protected StateManager $stateManager)
+    {
+    }
     public function handleInput(array $params): void
     {
         $student = $this->stateManager->getStateData($params['user_id'], 'student');

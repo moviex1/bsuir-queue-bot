@@ -9,8 +9,11 @@ use App\Telegram;
 use Database\Entity\User;
 use Helpers\Validation;
 
-class EnteringNameState extends State
+class EnteringNameState implements State
 {
+    public function __construct(protected Telegram $telegram, protected StateManager $stateManager)
+    {
+    }
     public function handleInput(array $params): void
     {
         if(Validation::validateUsername($params['message'])){

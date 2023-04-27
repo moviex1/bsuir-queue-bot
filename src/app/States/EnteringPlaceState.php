@@ -5,13 +5,17 @@ namespace App\States;
 use App\App;
 use App\Message;
 use App\Schedule;
+use App\Telegram;
 use Database\Entity\Queue;
 use Database\Entity\User;
 use DateTime;
 use Helpers\Validation;
 
-class EnteringPlaceState extends State
+class EnteringPlaceState implements State
 {
+    public function __construct(protected Telegram $telegram, protected StateManager $stateManager)
+    {
+    }
     public function handleInput(array $params): void
     {
         $user = $this->stateManager->getStateData($params['user_id'], 'user');

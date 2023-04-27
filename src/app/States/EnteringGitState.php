@@ -3,10 +3,14 @@
 namespace App\States;
 
 use App\App;
+use App\Telegram;
 use Database\Entity\User;
 
-class EnteringGitState extends State
+class EnteringGitState implements State
 {
+    public function __construct(protected Telegram $telegram, protected StateManager $stateManager)
+    {
+    }
     public function handleInput(array $params): void
     {
         $userRepository = App::entityManager()
