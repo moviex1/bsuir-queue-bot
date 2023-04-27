@@ -1,6 +1,6 @@
 # BSUIR-QUEUE-BOT
 
-The main goal of this telegram bot is to take the place in queue on labaratory works.
+The main goal of this telegram bot is to take the place in queue for lessons.
 I used https://iis.bsuir.by/api to get schedule of university and then based on group of student,
 that he provide give them functionality to {take a place|check his place|leave his place|check queue at certain day}.
 For better interactions with database i used Doctrine orm.
